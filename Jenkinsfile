@@ -84,7 +84,6 @@ def get_pipeline(image_key) {
             cd ${project}
             conan create . ${conan_user}/${conan_pkg_channel} \
               --settings concurrentqueue:build_type=Release \
-              --options concurrentqueue:shared=False \
               --build=outdated
           \""""
 
@@ -92,7 +91,6 @@ def get_pipeline(image_key) {
             cd ${project}
             conan create . ${conan_user}/${conan_pkg_channel} \
               --settings concurrentqueue:build_type=Release \
-              --options concurrentqueue:shared=True \
               --build=outdated
           \""""
 
@@ -179,12 +177,10 @@ def get_macos_pipeline() {
         stage("macOS: Package") {
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
             --settings concurrentqueue:build_type=Release \
-            --options concurrentqueue:shared=False \
             --build=outdated"
 
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
             --settings concurrentqueue:build_type=Release \
-            --options concurrentqueue:shared=True \
             --build=outdated"
 
           pkg_name_and_version = sh(
@@ -234,13 +230,11 @@ def get_win10_pipeline() {
           //bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
           //  create . ${conan_user}/${conan_pkg_channel} \
           //  --settings concurrentqueue:build_type=Release \
-          //  --options concurrentqueue:shared=False \
           //  --build=outdated"""
 
           bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
             create . ${conan_user}/${conan_pkg_channel} \
             --settings concurrentqueue:build_type=Release \
-            --options concurrentqueue:shared=True \
             --build=outdated"""
         }  // stage
 
