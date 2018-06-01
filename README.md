@@ -1,2 +1,2 @@
-# conan-concurrentqueue
-Conan package for the concurrentqueue library (https://github.com/cameron314/concurrentqueue). Generates the header file only.
+# conan-readerwriterqueue
+Conan package for the readerwriterqueue library (https://github.com/cameron314/readerwriterqueue). Generates the header file only.
