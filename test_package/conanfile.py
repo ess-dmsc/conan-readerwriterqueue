@@ -1,21 +1,25 @@
-from conans import ConanFile, CMake
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from conans import ConanFile, CMake, tools, RunEnvironment
 import os
 
-version = os.getenv('CONAN_CONCURRENTQUEUE_VERSION', '1.0.0')
-user    = os.getenv('CONAN_CONCURRENTQUEUE_USER', 'Manu343726')
-channel = os.getenv('CONAN_CONCURRENTQUEUE_CHANNEL', 'testing')
 
-class TestConcurrentQueue(ConanFile):
-    settings = 'os', 'compiler', 'build_type', 'arch'
-    requires = (
-        'concurrentqueue/{}@{}/{}'.format(version, user, channel)
-    )
-    generators = 'cmake'
+class TestPackageConan(ConanFile):
+    settings = "os", "compiler", "build_type", "arch"
+    generators = "cmake"
 
     def build(self):
-        cmake = CMake(self.settings)
-        self.run('cmake {} {}'.format(self.conanfile_directory, cmake.command_line))
-        self.run('cmake --build . {}'.format(cmake.build_config))
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
 
     def test(self):
-	self.run(os.path.join('.', 'bin', 'example'))
+        with tools.environment_append(RunEnvironment(self).vars):
+            bin_path = os.path.join("bin", "test_package")
+            if self.settings.os == "Windows":
+                self.run(bin_path)
+            elif self.settings.os == "Macos":
+                self.run("DYLD_LIBRARY_PATH=%s %s" % (os.environ.get('DYLD_LIBRARY_PATH', ''), bin_path))
+            else:
+                self.run("LD_LIBRARY_PATH=%s %s" % (os.environ.get('LD_LIBRARY_PATH', ''), bin_path))
