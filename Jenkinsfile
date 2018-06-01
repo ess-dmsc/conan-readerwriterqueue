@@ -1,4 +1,4 @@
-project = "conan-concurrentqueue"
+project = "conan-readerwriterqueue"
 
 conan_remote = "ess-dmsc-local"
 conan_user = "ess-dmsc"
@@ -83,14 +83,14 @@ def get_pipeline(image_key) {
           sh """docker exec ${container_name} ${custom_sh} -c \"
             cd ${project}
             conan create . ${conan_user}/${conan_pkg_channel} \
-              --settings concurrentqueue:build_type=Release \
+              --settings readerwriter:build_type=Release \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             cd ${project}
             conan create . ${conan_user}/${conan_pkg_channel} \
-              --settings concurrentqueue:build_type=Release \
+              --settings readerwriter:build_type=Release \
               --build=outdated
           \""""
 
@@ -176,11 +176,11 @@ def get_macos_pipeline() {
 
         stage("macOS: Package") {
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
-            --settings concurrentqueue:build_type=Release \
+            --settings readerwriter:build_type=Release \
             --build=outdated"
 
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
-            --settings concurrentqueue:build_type=Release \
+            --settings readerwriter:build_type=Release \
             --build=outdated"
 
           pkg_name_and_version = sh(
@@ -229,12 +229,12 @@ def get_win10_pipeline() {
         stage("win10: Package") {
           //bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
           //  create . ${conan_user}/${conan_pkg_channel} \
-          //  --settings concurrentqueue:build_type=Release \
+          //  --settings readerwriter:build_type=Release \
           //  --build=outdated"""
 
           bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
             create . ${conan_user}/${conan_pkg_channel} \
-            --settings concurrentqueue:build_type=Release \
+            --settings readerwriter:build_type=Release \
             --build=outdated"""
         }  // stage
 
