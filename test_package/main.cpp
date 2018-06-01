@@ -1,6 +1,7 @@
-#include <moodycamel/concurrentqueue.h>
+#include <concurrentqueue/concurrentqueue.h>
 #include <cassert>
 #include <thread>
+#include <iostream>
 
 using namespace moodycamel;
 
@@ -46,4 +47,5 @@ int main()
     for (int i = 0; i != 100; ++i) {
         assert(dequeued[i] == 1);
     }
+    std::cout << "Test passed!" << std::endl;
 }

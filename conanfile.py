@@ -24,8 +24,8 @@ class ConcurrentQueue(ConanFile):
     def package(self):
         include_dir  = os.path.join('include', 'concurrentqueue')
 
-        self.copy('concurrentqueue.h', dst=include_dir)
-        self.copy('blockingconcurrentqueue.h', dst=include_dir)
+        self.copy('concurrentqueue.h', dst=include_dir, src=self.source_subfolder)
+        self.copy('blockingconcurrentqueue.h', dst=include_dir, src=self.source_subfolder)
         self.copy("LICENSE.md", dst="license", src=self.source_subfolder)
         
     def package_id(self):
