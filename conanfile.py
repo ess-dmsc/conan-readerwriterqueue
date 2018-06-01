@@ -4,12 +4,12 @@
 from conans import ConanFile
 import os
 
-class ConcurrentQueue(ConanFile):
-    name = "concurrentqueue"
-    url = 'https://github.com/cameron314/concurrentqueue'
-    description='A fast multi-producer, multi-consumer lock-free queue for C++11'
+class ReaderWriterQueue(ConanFile):
+    name = "readerwriterqueue"
+    url = 'https://github.com/cameron314/readerwriterqueue'
+    description='A fast single-producer, single-consumer lock-free queue for C++'
     license = "Simplified BSD/Boost Software License"
-    version = "8f7e861"
+    version = "07e22ec"
     exports = "*.h"
     source_subfolder = "source_subfolder"
 
@@ -22,10 +22,10 @@ class ConcurrentQueue(ConanFile):
         pass # silence warning
 
     def package(self):
-        include_dir  = os.path.join('include', 'concurrentqueue')
+        include_dir  = os.path.join('include', 'readerwriterqueue')
 
-        self.copy('concurrentqueue.h', dst=include_dir, src=self.source_subfolder)
-        self.copy('blockingconcurrentqueue.h', dst=include_dir, src=self.source_subfolder)
+        self.copy('readerwriterqueue.h', dst=include_dir, src=self.source_subfolder)
+        self.copy('atomicops.h', dst=include_dir, src=self.source_subfolder)
         self.copy("LICENSE.md", dst="license", src=self.source_subfolder)
         
     def package_id(self):

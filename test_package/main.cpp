@@ -1,51 +1,23 @@
-#include <concurrentqueue/concurrentqueue.h>
+#include <readerwriterqueue/readerwriterqueue.h>
+#include <iostream>
 #include <cassert>
-#include <thread>
 #include <iostream>
 
 using namespace moodycamel;
 
 int main()
 {
-    ConcurrentQueue<int> q;
-    int dequeued[100] = { 0 };
-    std::thread threads[20];
+    ReaderWriterQueue<int> queue;
 
-    // Producers
-    for (int i = 0; i != 10; ++i) {
-        threads[i] = std::thread([&](int i) {
-            for (int j = 0; j != 10; ++j) {
-                q.enqueue(i * 10 + j);
-            }
-        }, i);
-    }
+    bool successEnqueue = queue.try_enqueue(42);
+    int i;
+    bool successDequeue = queue.try_dequeue(i);
 
-    // Consumers
-    for (int i = 10; i != 20; ++i) {
-        threads[i] = std::thread([&]() {
-            int item;
-            for (int j = 0; j != 20; ++j) {
-                if (q.try_dequeue(item)) {
-                    ++dequeued[item];
-                }
-            }
-        });
-    }
-
-    // Wait for all threads
-    for (int i = 0; i != 20; ++i) {
-        threads[i].join();
-    }
-
-    // Collect any leftovers (could be some if e.g. consumers finish before producers)
-    int item;
-    while (q.try_dequeue(item)) {
-        ++dequeued[item];
-    }
-
-    // Make sure everything went in and came back out!
-    for (int i = 0; i != 100; ++i) {
-        assert(dequeued[i] == 1);
+    if(successEnqueue && successDequeue)
+    {
+        assert(i == 42);
+        std::cout << i << std::endl;
     }
     std::cout << "Test passed!" << std::endl;
 }
+
