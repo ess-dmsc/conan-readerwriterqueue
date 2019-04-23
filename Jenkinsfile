@@ -18,12 +18,9 @@ containerBuildNodes = [
 packageBuilder = new ConanPackageBuilder(this, containerBuildNodes, conan_pkg_channel)
 packageBuilder.defineRemoteUploadNode('centos')
 
-
-conan_remote = "ess-dmsc-local"
-conan_user = "ess-dmsc"
-conan_pkg_channel = "stable"
-
-remote_upload_node = "centos7"
+builders = packageBuilder.createPackageBuilders { container ->
+  packageBuilder.addConfiguration(container)
+}
 
 node {
   checkout scm
