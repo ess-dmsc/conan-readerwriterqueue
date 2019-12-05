@@ -4,7 +4,6 @@ import ecdcpipeline.ConanPackageBuilder
 
 project = "conan-readerwriterqueue"
 
-conan_remote = "ess-dmsc-local"
 conan_user = "ess-dmsc"
 conan_pkg_channel = "stable"
 
@@ -42,21 +41,6 @@ def get_macos_pipeline() {
           checkout scm
         }  // stage
 
-        stage("macOS: Conan setup") {
-          withCredentials([
-            string(
-              credentialsId: 'local-conan-server-password',
-              variable: 'CONAN_PASSWORD'
-            )
-          ]) {
-            sh "conan user \
-              --password '${CONAN_PASSWORD}' \
-              --remote ${conan_remote} \
-              ${conan_user} \
-              > /dev/null"
-          }  // withCredentials
-        }  // stage
-
         stage("macOS: Package") {
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
             --settings readerwriter:build_type=Release \
@@ -65,19 +49,6 @@ def get_macos_pipeline() {
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
             --settings readerwriter:build_type=Release \
             --build=outdated"
-
-          pkg_name_and_version = sh(
-            script: "./get_conan_pkg_name_and_version.sh",
-            returnStdout: true
-          ).trim()
-        }  // stage
-
-        stage("macOS: Upload") {
-          sh "conan upload \
-            --all \
-            ${conan_upload_flag} \
-            --remote ${conan_remote} \
-            ${pkg_name_and_version}@${conan_user}/${conan_pkg_channel}"
         }  // stage
       }  // dir
     }  // node
@@ -110,25 +81,13 @@ def get_win10_pipeline() {
         }  // stage
 
         stage("win10: Package") {
-          //bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
-          //  create . ${conan_user}/${conan_pkg_channel} \
-          //  --settings readerwriter:build_type=Release \
-          //  --build=outdated"""
-
           bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
             create . ${conan_user}/${conan_pkg_channel} \
             --settings readerwriter:build_type=Release \
             --build=outdated"""
         }  // stage
-
-        stage("win10: Upload") {
-          //sh "upload_conan_package.sh conanfile.py \
-          //  ${conan_remote} \
-           // ${conan_user} \
-           // ${conan_pkg_channel}"
-        }  // stage
       }  // dir
-      }
+      }  // ws
     }  // node
   }  // return
 }  // def
