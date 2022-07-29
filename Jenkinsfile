@@ -24,7 +24,6 @@ node {
   checkout scm
 
   builders['macOS'] = get_macos_pipeline()
-  builders['windows10'] = get_win10_pipeline()
   parallel builders
 
   // Delete workspace when build is done.
@@ -50,29 +49,6 @@ def get_macos_pipeline() {
             --build=outdated"
         }  // stage
       }  // dir
-    }  // node
-  }  // return
-}  // def
-
-def get_win10_pipeline() {
-  return {
-    node('windows10') {
-      // Use custom location to avoid Win32 path length issues
-      ws('c:\\jenkins\\') {
-      cleanWs()
-      dir("${project}") {
-        stage("win10: Checkout") {
-          checkout scm
-        }  // stage
-
-        stage("win10: Package") {
-          bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
-            create . ${conan_user}/${conan_pkg_channel} \
-            --settings readerwriter:build_type=Release \
-            --build=outdated"""
-        }  // stage
-      }  // dir
-      }  // ws
     }  // node
   }  // return
 }  // def
