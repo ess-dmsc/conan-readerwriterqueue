@@ -23,7 +23,10 @@ builders = packageBuilder.createPackageBuilders { container ->
 node {
   checkout scm
 
-  builders['macOS'] = get_macos_pipeline()
+  if (env.ENABLE_MACOS_BUILDS.toUpperCase() == 'TRUE') {
+    builders['macOS'] = get_macos_pipeline()
+  }
+  
   parallel builders
 
   // Delete workspace when build is done.
